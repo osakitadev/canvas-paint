@@ -17,14 +17,19 @@ let prevMouseY = 0
 const ctx = canvas.getContext('2d')
 
 function draw() {
-  ctx.lineCap = 'round'
-  ctx.strokeStyle = colorPicker.value
+  if (isDrawing) {
+    ctx.lineCap = 'round'
+    ctx.strokeStyle = colorPicker.value
 
-  ctx.beginPath()
-  ctx.moveTo(prevMouseX, prevMouseY)
-  ctx.lineTo(mouseX, mouseY)
-  ctx.stroke()
-  ctx.closePath()
+    ctx.beginPath()
+    ctx.moveTo(prevMouseX, prevMouseY)
+    ctx.lineTo(mouseX, mouseY)
+    ctx.stroke()
+    ctx.closePath()
+  }
+
+  updateLastMouseCoordinates()
+  requestAnimationFrame(draw)
 }
 
 function updateMouseCoordinates(event) {
@@ -55,9 +60,4 @@ canvas.addEventListener('mouseup', () => (isDrawing = false))
 canvas.addEventListener('mouseleave', () => (isDrawing = false))
 brushSize.addEventListener('change', () => (ctx.lineWidth = brushSize.value))
 
-setInterval(() => {
-  if (!isDrawing) return
-
-  draw()
-  updateLastMouseCoordinates()
-}, 0)
+requestAnimationFrame(draw)
